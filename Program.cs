@@ -37,7 +37,7 @@ namespace HttpListenerExample
                 Console.WriteLine("URL      : " + req.Url.ToString());
                 Console.WriteLine("Method   : " + req.HttpMethod);
                 Console.WriteLine("Host     : " + req.UserHostName);
-                Console.WriteLine("Agent: " + req.UserAgent);
+                Console.WriteLine("UserAgent: " + req.UserAgent);
                 Console.WriteLine("Endpoint : " + req.Url.AbsolutePath);
                 Console.WriteLine("Query    : " + req.Url.Query);
                 // Bei /shutdown stoppen
