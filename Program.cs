@@ -14,6 +14,7 @@ namespace HttpListenerExample
         public static int requestCount = 0;
         public static string pageData;
         public static string cssData;
+        public static DateTime start;
 
 
 
@@ -31,13 +32,14 @@ namespace HttpListenerExample
                 HttpListenerResponse resp = ctx.Response;
 
                 // Request info
+                Console.WriteLine();
                 Console.WriteLine("Request #: {0}", ++requestCount);
-                Console.WriteLine(req.Url.ToString());
-                Console.WriteLine(req.HttpMethod);
-                Console.WriteLine(req.UserHostName);
-                Console.WriteLine(req.UserAgent);
-                Console.WriteLine(req.Url.AbsolutePath);
-
+                Console.WriteLine("URL      : " + req.Url.ToString());
+                Console.WriteLine("Method   : " + req.HttpMethod);
+                Console.WriteLine("Host     : " + req.UserHostName);
+                Console.WriteLine("Agent: " + req.UserAgent);
+                Console.WriteLine("Endpoint : " + req.Url.AbsolutePath);
+                Console.WriteLine("Query    : " + req.Url.Query);
                 // Bei /shutdown stoppen
                 byte[] data;
                 string endpoint = req.Url.AbsolutePath;
@@ -47,11 +49,10 @@ namespace HttpListenerExample
                     windowsPath = windowsPath.Substring(1);
                 }
                 string path = Path.Combine(Directory.GetCurrentDirectory(), windowsPath, "index.html");
-                Console.WriteLine("Accesing {0}", path);
+                Console.WriteLine("Accesing : {0}", path);
                 Console.WriteLine();
                 if (File.Exists(path))
                 {
-                    Console.WriteLine(path);
                     pageData = File.ReadAllText(path);
 
                     int headindex = pageData.IndexOf("<head>");
@@ -78,6 +79,14 @@ namespace HttpListenerExample
                         Console.WriteLine($"Server shutdown initiatet by {req.RemoteEndPoint.Address} !!");
                         Console.ResetColor();
                         runServer = false;
+                    }
+                    else if (req.Url.AbsolutePath == "/count")
+                    {
+                        data = Encoding.UTF8.GetBytes($"Requests: {requestCount} since {start.ToString("dddd, dd.MM yyyy HH:mm:ss.ff")}({start - DateTime.Now})");
+                        resp.ContentType = "text/plain";
+                        resp.ContentEncoding = Encoding.UTF8;
+                        resp.ContentLength64 = data.LongLength;
+                        await resp.OutputStream.WriteAsync(data, 0, data.Length);
                     }
                     else
                     {
@@ -123,6 +132,7 @@ namespace HttpListenerExample
             listener.Prefixes.Add(url);
             Console.WriteLine("Starting server...");
             listener.Start();
+            start = DateTime.Now;
             Console.WriteLine("Listening for connections on {0}", url);
 
             // Handle requests
