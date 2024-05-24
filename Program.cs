@@ -139,7 +139,7 @@ namespace HttpListenerExample
 
         public static void Main(string[] args)
         {
-            // Create a Http server and start listening for incoming connections
+            Console.WriteLine("See \"https://github.com/Joelbu537/http_server/\" for more information"); 
 
             listener = new HttpListener();
             listener.Prefixes.Add(url);
@@ -154,6 +154,11 @@ namespace HttpListenerExample
 
             // Close the listener
             listener.Close();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("HTTP request listener closed!");
+            Console.ResetColor();
+            Console.WriteLine("You can now close this window!");
+            while(true) {}
         }
     }
 }
