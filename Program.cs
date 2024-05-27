@@ -119,7 +119,8 @@ namespace HttpListenerExample
                         // Handle unknown endpoints (send 404)
                         resp.StatusCode = 404;
                         resp.StatusDescription = "Not Found";
-                        byte[] notFoundData = Encoding.UTF8.GetBytes(Path.Combine(Directory.GetCurrentDirectory(), "404.html"));
+                        string content = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "404.html"));
+                        byte[] notFoundData = Encoding.UTF8.GetBytes(content);
                         resp.ContentType = "text/html";
                         resp.ContentEncoding = Encoding.UTF8;
                         resp.ContentLength64 = notFoundData.LongLength;
